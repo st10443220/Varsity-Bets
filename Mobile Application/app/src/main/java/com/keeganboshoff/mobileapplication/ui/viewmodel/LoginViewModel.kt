@@ -7,31 +7,31 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.keeganboshoff.mobileapplication.data.service.AccountService
 import com.keeganboshoff.mobileapplication.data.service.implementation.AccountServiceImplementation
-import com.keeganboshoff.mobileapplication.ui.state.AuthUiState
+import com.keeganboshoff.mobileapplication.ui.state.LoginUiState
 
-class AuthViewModel(
+class LoginViewModel(
     private val accountService: AccountService = AccountServiceImplementation()
 ) : ViewModel() {
 
-    var authUiState by mutableStateOf(AuthUiState())
+    var loginUiState by mutableStateOf(LoginUiState())
         private set
 
     fun onEmailChange(newValue: String) {
-        authUiState = authUiState.copy(email = newValue)
+        loginUiState = loginUiState.copy(email = newValue)
     }
 
     fun onPasswordChange(newValue: String) {
-        authUiState = authUiState.copy(password = newValue)
+        loginUiState = loginUiState.copy(password = newValue)
     }
 
     fun loginUser(onSuccess: () -> Unit) {
-        val state = authUiState
+        val state = loginUiState
 
         // Check all fields are filled in
         if (state.email.isBlank()
             || state.password.isBlank()
         ) {
-            authUiState = state.copy(errorMessage = "Please enter your credentials.")
+            loginUiState = state.copy(errorMessage = "Please enter your credentials.")
             return
         }
 
@@ -39,11 +39,11 @@ class AuthViewModel(
         if (!state.email.contains(char = '@')
             && (state.email.lastIndexOf(char = '.') < state.email.indexOf(char = '@'))
         ) {
-            authUiState = state.copy(errorMessage = "Please enter a valid email.")
+            loginUiState = state.copy(errorMessage = "Please enter a valid email.")
             return
         }
 
-        authUiState = state.copy(isLoading = true, errorMessage = null)
+        loginUiState = state.copy(isLoading = true, errorMessage = null)
 
         // Try login to the account
         accountService.authenticate(
@@ -52,12 +52,12 @@ class AuthViewModel(
         ) { error ->
             if (error == null) {
                 // Success
-                authUiState = state.copy(isLoading = false)
+                loginUiState = state.copy(isLoading = false)
                 onSuccess()
             } else {
                 // Failure
                 // Update Ui with the firebase error
-                authUiState = state.copy(
+                loginUiState = state.copy(
                     isLoading = false,
                     errorMessage = error.localizedMessage ?: "Incorrect login details."
                 )

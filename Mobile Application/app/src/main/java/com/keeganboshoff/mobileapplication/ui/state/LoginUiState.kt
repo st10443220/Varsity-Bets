@@ -1,6 +1,6 @@
 package com.keeganboshoff.mobileapplication.ui.state
 
-data class AuthUiState(
+data class LoginUiState(
     val fullName: String = "",
     val email: String = "",
     val username: String = "",

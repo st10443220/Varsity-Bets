@@ -20,16 +20,13 @@ import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Brush.Companion.verticalGradient
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.keeganboshoff.mobileapplication.ui.components.GlassCard
 import com.keeganboshoff.mobileapplication.ui.components.VarsityBranding
 import com.keeganboshoff.mobileapplication.ui.components.VarsityButton
@@ -37,24 +34,24 @@ import com.keeganboshoff.mobileapplication.ui.components.VarsityInput
 import com.keeganboshoff.mobileapplication.ui.theme.CyberViolet
 import com.keeganboshoff.mobileapplication.ui.theme.DeepVioletGlow
 import com.keeganboshoff.mobileapplication.ui.theme.MidnightBlack
+import com.keeganboshoff.mobileapplication.ui.theme.NeonRed
 import com.keeganboshoff.mobileapplication.ui.theme.TextPrimary
 import com.keeganboshoff.mobileapplication.ui.theme.TextSecondary
+import com.keeganboshoff.mobileapplication.ui.viewmodel.RegisterViewModel
 
 @Composable
-fun RegisterScreen(onNavigateBack: () -> Unit) {
+fun RegisterScreen(
+    onNavigateBack: () -> Unit,
+    viewModel: RegisterViewModel = viewModel()
+) {
     // State Management
-    var fullName by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
-    var isLoading by remember { mutableStateOf(false) }
+    val uiState = viewModel.registerUiState
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                Brush.verticalGradient(
+                verticalGradient(
                     listOf(
                         DeepVioletGlow, MidnightBlack
                     )
@@ -88,8 +85,8 @@ fun RegisterScreen(onNavigateBack: () -> Unit) {
 
                 // Name
                 VarsityInput(
-                    fullName,
-                    { fullName = it },
+                    uiState.fullName,
+                    { viewModel.onFullNameChange(it) },
                     "Full Name",
                     Icons.Outlined.Badge
                 )
@@ -101,8 +98,8 @@ fun RegisterScreen(onNavigateBack: () -> Unit) {
 
                 // Email
                 VarsityInput(
-                    email,
-                    { email = it },
+                    uiState.email,
+                    { viewModel.onEmailChange(it) },
                     "Email Address",
                     Icons.Outlined.Email
                 )
@@ -114,8 +111,8 @@ fun RegisterScreen(onNavigateBack: () -> Unit) {
 
                 // Username
                 VarsityInput(
-                    username,
-                    { username = it },
+                    uiState.username,
+                    { viewModel.onUsernameChange(it) },
                     "Username",
                     Icons.Outlined.Person
                 )
@@ -127,8 +124,8 @@ fun RegisterScreen(onNavigateBack: () -> Unit) {
 
                 // Password
                 VarsityInput(
-                    password,
-                    { password = it },
+                    uiState.password,
+                    { viewModel.onPasswordChange(it) },
                     "Password",
                     Icons.Outlined.Lock,
                     true
@@ -141,12 +138,25 @@ fun RegisterScreen(onNavigateBack: () -> Unit) {
 
                 // Confirm Password
                 VarsityInput(
-                    confirmPassword,
-                    { confirmPassword = it },
+                    uiState.confirmPassword,
+                    { viewModel.onConfirmPasswordChange(it) },
                     "Confirm Password",
                     Icons.Outlined.CheckCircle,
                     true
                 )
+
+                // Display the error message
+                uiState.errorMessage?.let { error ->
+                    Text(
+                        text = error,
+                        color = NeonRed,
+                        fontSize = 12.sp,
+                        modifier = Modifier
+                            .padding(
+                                top = 8.dp
+                            )
+                    )
+                }
 
                 Spacer(
                     modifier = Modifier
@@ -154,9 +164,11 @@ fun RegisterScreen(onNavigateBack: () -> Unit) {
                 )
 
                 // Register Button
-                VarsityButton("REGISTER") {
-                    isLoading = true
-                    // TODO: Firebase Registration logic
+                VarsityButton(
+                    text = "REGISTER",
+                    isLoading = uiState.isLoading
+                ) {
+                    viewModel.registerUser(onSuccess = { onNavigateBack() })
                 }
             }
 
