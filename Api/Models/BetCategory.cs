@@ -9,5 +9,6 @@ namespace Api.Models
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string HexColor { get; set; } = "#2ECC71";
+        public string IconName { get; set; } = string.Empty;
     }
 }

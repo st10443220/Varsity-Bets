@@ -30,8 +30,37 @@ namespace Api.Data
                 .WithMany(u => u.Sessions)
                 .HasForeignKey(s => s.UserProfileFirebaseUid);
 
-            // Inside ApplicationDbContext.cs -> OnModelCreating
             modelBuilder.Entity<BetSession>().Property(s => s.BuyInAmount).HasPrecision(18, 2);
+            modelBuilder.Entity<BetSession>().Property(s => s.CashOutAmount).HasPrecision(18, 2);
+
+            modelBuilder
+                .Entity<BetCategory>()
+                .HasData(
+                    new BetCategory
+                    {
+                        Id = 1,
+                        Name = "Roulette",
+                        HexColor = "#E74C3C",
+                        IconName = "casino",
+                        Description = "Track your spins",
+                    },
+                    new BetCategory
+                    {
+                        Id = 2,
+                        Name = "Blackjack",
+                        HexColor = "#2C3E50",
+                        IconName = "style",
+                        Description = "Hit or Stand",
+                    },
+                    new BetCategory
+                    {
+                        Id = 3,
+                        Name = "Slots",
+                        HexColor = "#F1C40F",
+                        IconName = "seven_poker",
+                        Description = "Spin to win",
+                    }
+                );
         }
     }
 }
