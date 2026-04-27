@@ -17,6 +17,7 @@ namespace Api.Controllers
         }
 
         // POST: api/users/sync
+        [HttpPost("sync")]
         public async Task<IActionResult> SyncUser([FromBody] UserProfile userProfile)
         {
             // Not valid user
