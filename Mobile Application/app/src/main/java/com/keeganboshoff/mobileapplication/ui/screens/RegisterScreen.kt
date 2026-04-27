@@ -76,6 +76,7 @@ fun RegisterScreen(onNavigateBack: () -> Unit) {
                     .height(32.dp)
             )
 
+            // Create Account
             GlassCard {
                 Text(
                     "Create Account",

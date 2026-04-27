@@ -106,7 +106,7 @@ fun LoginScreen(
                     isLoading = isLoading,
                     onClick = {
                         isLoading = true
-                        // Firebase logic will live here later
+                        // TODO: Firebase Login logic
                         onLoginSuccess()
                     }
                 )
