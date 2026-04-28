@@ -1,4 +1,4 @@
-# Varsity Bets (BetWise) 🃏
+# Varsity Bets🃏
 **A Full-Stack Betting Session & Bankroll Tracker**
 
 Varsity Bets is a robust session logger designed to help users track gaming performance, manage bankrolls, and visualize win/loss trends across various categories.
