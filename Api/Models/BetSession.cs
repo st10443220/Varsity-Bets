@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Api.Models
 {
@@ -7,9 +8,11 @@ namespace Api.Models
         public int Id { get; set; }
 
         [ForeignKey("User")]
+        [Required]
         public string UserProfileFirebaseUid { get; set; } = string.Empty;
 
         [ForeignKey("Category")]
+        [Required]
         public int BetCategoryId { get; set; }
 
         // Added precision attributes here
@@ -25,5 +28,11 @@ namespace Api.Models
         // Navigation properties
         public UserProfile? User { get; set; }
         public BetCategory? Category { get; set; }
+
+        [NotMapped]
+        public decimal Profit => CashOutAmount - BuyInAmount;
+
+        [NotMapped]
+        public bool IsActive => EndTime == null;
     }
 }
