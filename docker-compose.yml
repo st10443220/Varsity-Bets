@@ -21,6 +21,7 @@ services:
       dockerfile: Api/Dockerfile
     ports:
       - "5000:8080"
+      - "5001:8081"
     depends_on:
       - db
     environment:
