@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
@@ -19,10 +20,6 @@ import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -40,6 +37,7 @@ import com.keeganboshoff.mobileapplication.ui.components.VarsityInput
 import com.keeganboshoff.mobileapplication.ui.theme.CyberViolet
 import com.keeganboshoff.mobileapplication.ui.theme.DeepVioletGlow
 import com.keeganboshoff.mobileapplication.ui.theme.MidnightBlack
+import com.keeganboshoff.mobileapplication.ui.theme.NeonRed
 import com.keeganboshoff.mobileapplication.ui.theme.TextPrimary
 import com.keeganboshoff.mobileapplication.ui.theme.TextSecondary
 import com.keeganboshoff.mobileapplication.ui.viewmodel.LoginViewModel
@@ -50,11 +48,7 @@ fun LoginScreen(
     onLoginSuccess: () -> Unit,
     viewModel: LoginViewModel = viewModel()
 ) {
-    // UI States hoisted to the top level
-    var identifier by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var isLoading by remember { mutableStateOf(false) }
-
+    // UI State Management
     val uiState = viewModel.loginUiState
     val focusManager = LocalFocusManager.current
 
@@ -71,6 +65,7 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(24.dp)
+                .imePadding()
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -110,7 +105,7 @@ fun LoginScreen(
 
                 // Shared Input Component for Password
                 VarsityInput(
-                    value = uiState.email,
+                    value = uiState.password,
                     onValueChange = { viewModel.onPasswordChange(it) },
                     label = "Password",
                     icon = Icons.Outlined.Lock,
@@ -121,21 +116,33 @@ fun LoginScreen(
                     keyboardActions = KeyboardActions(
                         onDone = {
                             focusManager.clearFocus()
-                            viewModel.loginUser(onSuccess = onLoginSuccess)
+                            viewModel.loginUser(onSuccess = { onLoginSuccess() })
                         }
                     )
                 )
+
+                // Display the error message
+                uiState.errorMessage?.let { error ->
+                    Text(
+                        text = error,
+                        color = NeonRed,
+                        fontSize = 12.sp,
+                        modifier = Modifier
+                            .padding(
+                                top = 8.dp
+                            )
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(32.dp))
 
                 // Shared Button Component
                 VarsityButton(
                     text = "LOG IN",
-                    isLoading = isLoading,
+                    isLoading = uiState.isLoading,
                     onClick = {
-                        isLoading = true
-                        // TODO: Firebase Login logic
-                        onLoginSuccess()
+                        focusManager.clearFocus()
+                        viewModel.loginUser(onSuccess = { onLoginSuccess() })
                     }
                 )
             }

@@ -9,8 +9,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Badge
@@ -22,8 +25,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Brush.Companion.verticalGradient
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -41,11 +47,13 @@ import com.keeganboshoff.mobileapplication.ui.viewmodel.RegisterViewModel
 
 @Composable
 fun RegisterScreen(
+    onRegisterSuccess: () -> Unit,
     onNavigateBack: () -> Unit,
     viewModel: RegisterViewModel = viewModel()
 ) {
     // State Management
     val uiState = viewModel.registerUiState
+    val focusManager = LocalFocusManager.current
 
     Box(
         modifier = Modifier
@@ -62,6 +70,7 @@ fun RegisterScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(24.dp)
+                .imePadding()
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -88,7 +97,15 @@ fun RegisterScreen(
                     uiState.fullName,
                     { viewModel.onFullNameChange(it) },
                     "Full Name",
-                    Icons.Outlined.Badge
+                    Icons.Outlined.Badge,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        }
+                    )
                 )
 
                 Spacer(
@@ -101,7 +118,15 @@ fun RegisterScreen(
                     uiState.email,
                     { viewModel.onEmailChange(it) },
                     "Email Address",
-                    Icons.Outlined.Email
+                    Icons.Outlined.Email,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        }
+                    )
                 )
 
                 Spacer(
@@ -114,7 +139,15 @@ fun RegisterScreen(
                     uiState.username,
                     { viewModel.onUsernameChange(it) },
                     "Username",
-                    Icons.Outlined.Person
+                    Icons.Outlined.Person,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        }
+                    )
                 )
 
                 Spacer(
@@ -128,7 +161,15 @@ fun RegisterScreen(
                     { viewModel.onPasswordChange(it) },
                     "Password",
                     Icons.Outlined.Lock,
-                    true
+                    true,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        }
+                    )
                 )
 
                 Spacer(
@@ -142,7 +183,16 @@ fun RegisterScreen(
                     { viewModel.onConfirmPasswordChange(it) },
                     "Confirm Password",
                     Icons.Outlined.CheckCircle,
-                    true
+                    true,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                            viewModel.registerUser(onSuccess = { onRegisterSuccess() })
+                        }
+                    )
                 )
 
                 // Display the error message
@@ -168,7 +218,7 @@ fun RegisterScreen(
                     text = "REGISTER",
                     isLoading = uiState.isLoading
                 ) {
-                    viewModel.registerUser(onSuccess = { onNavigateBack() })
+                    viewModel.registerUser(onSuccess = { onRegisterSuccess() })
                 }
             }
 
