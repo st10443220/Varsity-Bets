@@ -4,9 +4,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
+import com.keeganboshoff.mobileapplication.data.models.UserSyncRequest
+import com.keeganboshoff.mobileapplication.data.remote.RetrofitClient
 import com.keeganboshoff.mobileapplication.data.service.AccountService
 import com.keeganboshoff.mobileapplication.data.service.implementation.AccountServiceImplementation
 import com.keeganboshoff.mobileapplication.ui.state.RegisterUiState
+import kotlinx.coroutines.launch
 
 class RegisterViewModel(
     private val accountService: AccountService = AccountServiceImplementation()
@@ -35,7 +40,7 @@ class RegisterViewModel(
         registerUiState = registerUiState.copy(confirmPassword = newValue)
     }
 
-    fun registerUser(onSuccess: () -> Unit) {
+    fun registerUser(onSuccess: (String) -> Unit) {
         val state = registerUiState
 
         // Check all fields are filled in
@@ -107,8 +112,41 @@ class RegisterViewModel(
         ) { error ->
             if (error == null) {
                 // Success
-                registerUiState = state.copy(isLoading = false)
-                onSuccess()
+                // Get created users firebase uid
+                val firebaseUid = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+
+                // Start coroutine to sync user data with API service
+                viewModelScope.launch {
+                    // Try sync user data
+                    try {
+                        val response = RetrofitClient.apiService.syncUser(
+                            UserSyncRequest(
+                                uid = firebaseUid,
+                                email = state.email,
+                                username = state.username,
+                                fullName = state.fullName
+                            )
+                        )
+
+                        // Response Sync Success
+                        if (response.isSuccessful) {
+                            registerUiState = registerUiState.copy(isLoading = false)
+                            onSuccess(state.fullName)
+                        } else {
+                            // Response Sync Fail
+                            registerUiState = registerUiState.copy(
+                                isLoading = false,
+                                errorMessage = "Database Sync Failed (Code: ${response.code()}"
+                            )
+                        }
+                        // Could not sync user data
+                    } catch (e: Exception) {
+                        registerUiState = registerUiState.copy(
+                            isLoading = false,
+                            errorMessage = "Network error: Could not reach the API"
+                        )
+                    }
+                }
             } else {
                 // Failure
                 // Update Ui to state with firebase error

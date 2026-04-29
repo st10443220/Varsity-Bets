@@ -1,7 +1,15 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.gms.google.services)
+}
+// Use local properties to store sensitive data
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
 }
 
 android {
@@ -12,6 +20,10 @@ android {
         }
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = "com.keeganboshoff.mobileapplication"
         minSdk = 24
@@ -20,6 +32,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val apiUrl = localProperties.getProperty("api.base.url")
+
+        buildConfigField("String", "API_BASE_URL", apiUrl)
     }
 
     buildTypes {
@@ -62,4 +78,9 @@ dependencies {
 
     // Icons
     implementation("androidx.compose.material:material-icons-extended")
+
+    // Retrofit core library
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    // Retrofit GSON converter (to automatically parse JSON)
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
 }

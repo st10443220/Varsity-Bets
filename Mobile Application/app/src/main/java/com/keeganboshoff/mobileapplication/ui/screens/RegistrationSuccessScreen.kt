@@ -32,6 +32,7 @@ import com.keeganboshoff.mobileapplication.ui.theme.TextSecondary
 
 @Composable
 fun RegistrationSuccessScreen(
+    fullName: String,
     onNavigateToLogin: () -> Unit,
 ) {
     Box(
@@ -62,7 +63,7 @@ fun RegistrationSuccessScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Account Created!",
+                    text = "Account Created, ${fullName}!",
                     color = TextPrimary,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,

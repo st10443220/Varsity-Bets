@@ -49,7 +49,7 @@ import com.keeganboshoff.mobileapplication.ui.viewmodel.RegisterViewModel
 
 @Composable
 fun RegisterScreen(
-    onRegisterSuccess: () -> Unit,
+    onRegisterSuccess: (String) -> Unit,
     onNavigateBack: () -> Unit,
     viewModel: RegisterViewModel = viewModel()
 ) {
@@ -199,7 +199,11 @@ fun RegisterScreen(
                     keyboardActions = KeyboardActions(
                         onDone = {
                             focusManager.clearFocus()
-                            viewModel.registerUser(onSuccess = { onRegisterSuccess() })
+                            viewModel.registerUser(onSuccess = { fullName ->
+                                onRegisterSuccess(
+                                    fullName
+                                )
+                            })
                         }
                     )
                 )
@@ -227,7 +231,7 @@ fun RegisterScreen(
                     text = "REGISTER",
                     isLoading = uiState.isLoading
                 ) {
-                    viewModel.registerUser(onSuccess = { onRegisterSuccess() })
+                    viewModel.registerUser(onSuccess = { fullName -> onRegisterSuccess(fullName) })
                 }
             }
 

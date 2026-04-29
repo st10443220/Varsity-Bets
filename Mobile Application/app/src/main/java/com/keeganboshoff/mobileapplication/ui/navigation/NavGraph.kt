@@ -34,8 +34,8 @@ fun NavGraph(
         // Register
         composable("register") {
             RegisterScreen(
-                onRegisterSuccess = {
-                    navController.navigate("reg_success") {
+                onRegisterSuccess = { fullName ->
+                    navController.navigate("reg_success/${fullName}") {
                         popUpTo("register") { inclusive = true }
                     }
                 },
@@ -46,8 +46,10 @@ fun NavGraph(
         } // End Register
 
         // Registration Success
-        composable("reg_success") {
+        composable("reg_success/{fullName}") { backStackEntry ->
+            val fullName = backStackEntry.arguments?.getString("fullName") ?: "User"
             RegistrationSuccessScreen(
+                fullName = fullName,
                 onNavigateToLogin = {
                     navController.navigate("login") {
                         popUpTo("reg_success") { inclusive = true }
