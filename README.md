@@ -13,15 +13,16 @@ The project has successfully bridged the gap between the mobile client and the c
 *   **Secure API Synchronization:** Established a secure communication channel between Android and the .NET API using **Firebase JWT Bearer Tokens**.
 *   **Backend Orchestration:** Fully containerized the environment using **Docker Compose**, with the API now successfully managing many-to-one relationships between Users and Sessions.
 *   **Live Dashboard Hub:** Developed a central hub using **Jetpack Compose** that fetches real-time profile data and calculates performance metrics (Total Profit & current Win Streaks) on-the-fly.
+*   **Direct Session Initiation:** Implemented the "Start Session" interface, enabling the mobile client to post new session data directly to the API and persist it within the SQL Server database.
 
 ---
 
 ## 📅 Upcoming Phases (Roadmap)
 
-### **Phase 2: Local Persistence & Categorization**
+### **Phase 2: Local Persistence & Refined Control**
 *   **RoomDB Integration:** Implementing local-first storage to cache profile data and support offline session logging.
 *   **Category Engine:** Adding support for pre-created default categories (Poker, Slots, Sports) and custom user-defined categories with icons.
-*   **Session Management:** Developing the UI and logic to start, end, and edit betting sessions directly from the mobile app.
+*   **Active Session Management:** Developing the UI logic to end, edit, and track the duration of active betting sessions in real-time.
 
 ### **Phase 3: Multimedia & Goal Tracking**
 *   **Photo Attachments:** Enabling users to attach screenshots of winning slips or strategy notes to specific sessions.
