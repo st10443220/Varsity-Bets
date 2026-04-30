@@ -11,7 +11,7 @@ object RetrofitClient {
     // Create our API service
     val apiService: VarsityApiService by lazy {
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl("http://10.0.2.2:5000/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(VarsityApiService::class.java)

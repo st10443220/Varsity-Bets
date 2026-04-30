@@ -113,40 +113,47 @@ class RegisterViewModel(
             if (error == null) {
                 // Success
                 // Get created users firebase uid
-                val firebaseUid = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+                val user = FirebaseAuth.getInstance().currentUser
 
-                // Start coroutine to sync user data with API service
-                viewModelScope.launch {
-                    // Try sync user data
-                    try {
-                        val response = RetrofitClient.apiService.syncUser(
-                            UserSyncRequest(
-                                uid = firebaseUid,
-                                email = state.email,
-                                username = state.username,
-                                fullName = state.fullName
+                // Ask firebase for the latest token
+                user?.getIdToken(false)?.addOnSuccessListener { result ->
+                    val token = "Bearer ${result.token}"
+
+                    // Start coroutine to sync user data with API service
+                    viewModelScope.launch {
+                        // Try sync user data
+                        try {
+                            val response = RetrofitClient.apiService.syncUser(
+                                token = token,
+                                request = UserSyncRequest(
+                                    firebaseUid = user.uid,
+                                    username = state.username,
+                                    fullName = state.fullName
+                                )
                             )
-                        )
 
-                        // Response Sync Success
-                        if (response.isSuccessful) {
-                            registerUiState = registerUiState.copy(isLoading = false)
-                            onSuccess(state.fullName)
-                        } else {
-                            // Response Sync Fail
+                            // Response Sync Success
+                            if (response.isSuccessful) {
+                                registerUiState = registerUiState.copy(isLoading = false)
+                                onSuccess(state.fullName)
+                            } else {
+                                // Response Sync Fail
+                                registerUiState = registerUiState.copy(
+                                    isLoading = false,
+                                    errorMessage = "Database Sync Failed (Code: ${response.code()})"
+                                )
+                            }
+                            // Could not sync user data
+                        } catch (e: Exception) {
                             registerUiState = registerUiState.copy(
                                 isLoading = false,
-                                errorMessage = "Database Sync Failed (Code: ${response.code()}"
+                                errorMessage = "Network error: Could not reach the API"
                             )
                         }
-                        // Could not sync user data
-                    } catch (e: Exception) {
-                        registerUiState = registerUiState.copy(
-                            isLoading = false,
-                            errorMessage = "Network error: Could not reach the API"
-                        )
                     }
                 }
+
+
             } else {
                 // Failure
                 // Update Ui to state with firebase error
