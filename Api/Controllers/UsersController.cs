@@ -23,7 +23,7 @@ public class UsersController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet]
+    [HttpGet("profile")]
     public async Task<IActionResult> GetUserProfile()
     {
         var firebaseUid = User.Claims.FirstOrDefault(c => c.Type == "user_id")?.Value;
