@@ -1,35 +1,29 @@
 # Varsity Bets🃏
+
 **A Full-Stack Betting Session & Bankroll Tracker**
-
 Varsity Bets is a robust session logger designed to help users track gaming performance, manage bankrolls, and visualize win/loss trends across various categories.
-
-## 🚀 Current Project Status: Phase 1 (Infrastructure)
-The project is in active development with the core infrastructure currently being established.
-
-### **Completed Milestones**
-* **Backend Orchestration:** Fully containerized the development environment using **Docker Compose**, including the .NET Core API and a SQL Server instance.
-* **Identity Management:** Integrated **Firebase Authentication** for secure user registration and login flows.
-* **Mobile UI Foundation:** Developed the core Android client using **Kotlin** and **Jetpack Compose**.
-* **Database Schema:** Finalized the relational design for Categories and Sessions (1:N Relationship).
 
 ---
 
-## 🛠️ Tech Stack
-* **Mobile:** Kotlin, Jetpack Compose, RoomDB (Local Persistence), Firebase Auth.
-* **Backend:** .NET Core Web API, Entity Framework Core.
-* **DevOps/Data:** Docker Compose, SQL Server.
+## 🚀 Current Project Status: Phase 1 & 2 (Integration)
+The project has successfully bridged the gap between the mobile client and the containerized backend.
+
+### **Completed Milestones**
+*   **Identity & Onboarding:** Integrated **Firebase Authentication** with a custom "Registration Success" flow that handles user transition from account creation to login.
+*   **Secure API Synchronization:** Established a secure communication channel between Android and the .NET API using **Firebase JWT Bearer Tokens**.
+*   **Backend Orchestration:** Fully containerized the environment using **Docker Compose**, with the API now successfully managing many-to-one relationships between Users and Sessions.
+*   **Live Dashboard Hub:** Developed a central hub using **Jetpack Compose** that fetches real-time profile data and calculates performance metrics (Total Profit & current Win Streaks) on-the-fly.
 
 ---
 
 ## 📅 Upcoming Phases (Roadmap)
 
-### **Phase 2: Data Persistence & Categorization**
-* **UI Design:** Completing the rest of the mobile UI following the current theme and patterns used amongst the Login and Register pages. (TODO: Implement account created page before going back to login page)
-* **RoomDB Integration:** Implementing local-first storage for "Game Categories" (Poker, Slots, etc.) and individual sessions.
-* **Category Engine:** Adding support for pre-created default categories and custom user-defined categories with descriptions and images.
-* **API Linking:** Connecting the mobile frontend to the Dockerized API for cloud synchronization.
+### **Phase 2: Local Persistence & Categorization**
+*   **RoomDB Integration:** Implementing local-first storage to cache profile data and support offline session logging.
+*   **Category Engine:** Adding support for pre-created default categories (Poker, Slots, Sports) and custom user-defined categories with icons.
+*   **Session Management:** Developing the UI and logic to start, end, and edit betting sessions directly from the mobile app.
 
 ### **Phase 3: Multimedia & Goal Tracking**
-* **Photo Attachments:** Enabling users to attach screenshots, strategy notes, or leaderboard images to specific sessions.
-* **Chip Goals:** Implementing a performance tracking system where users set monthly minimum/maximum limits and category-specific goals.
-* **Analytics Dashboard:** Visualizing session data to provide insights into win/loss fluctuations.
+*   **Photo Attachments:** Enabling users to attach screenshots of winning slips or strategy notes to specific sessions.
+*   **Bankroll Goals:** Implementing a tracking system where users set monthly limits and category-specific profit targets.
+*   **Advanced Analytics:** Visualizing session history with charts to provide deeper insights into win/loss fluctuations over time.
