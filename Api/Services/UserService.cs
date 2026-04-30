@@ -30,5 +30,10 @@ namespace Api.Services
                 Username = profile.Username,
             };
         }
+
+        public async Task<UserProfile?> GetUserProfileAsync(string firebaseUid)
+        {
+            return await _context.UserProfiles.FindAsync(firebaseUid);
+        }
     }
 }

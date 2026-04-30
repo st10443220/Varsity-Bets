@@ -6,5 +6,6 @@ namespace Api.Services
     public interface IUserService
     {
         Task<UserDto> SyncUserAsync(UserProfile profile);
+        Task<UserProfile?> GetUserProfileAsync(string firebaseUid);
     }
 }

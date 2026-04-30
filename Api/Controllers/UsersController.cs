@@ -22,4 +22,17 @@ public class UsersController : ControllerBase
         var result = await _userService.SyncUserAsync(userProfile);
         return Ok(result);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetUserProfile()
+    {
+        var firebaseUid = User.Claims.FirstOrDefault(c => c.Type == "user_id")?.Value;
+
+        if (string.IsNullOrEmpty(firebaseUid))
+            return Unauthorized();
+
+        var userProfile = await _userService.GetUserProfileAsync(firebaseUid);
+
+        return Ok(userProfile);
+    }
 }
