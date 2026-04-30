@@ -20,14 +20,19 @@ namespace Api.Controllers
 
         // POST: api/sessions/start
         [HttpPost("start")]
-        public async Task<ActionResult<SessionDto>> Start([FromBody] BetSession session)
+        public async Task<ActionResult<SessionDto>> Start([FromBody] StartSessionDto request)
         {
             var tokenUid = User.Claims.FirstOrDefault(c => c.Type == "user_id")?.Value;
 
             if (string.IsNullOrEmpty(tokenUid))
                 return Unauthorized();
 
-            session.UserProfileFirebaseUid = tokenUid;
+            var session = new BetSession
+            {
+                UserProfileFirebaseUid = tokenUid,
+                BuyInAmount = request.BuyInAmount,
+                BetCategoryId = request.BetCategoryId,
+            };
 
             try
             {

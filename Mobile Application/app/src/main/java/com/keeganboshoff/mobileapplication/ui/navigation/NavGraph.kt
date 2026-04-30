@@ -8,6 +8,7 @@ import com.keeganboshoff.mobileapplication.ui.screens.HomeScreen
 import com.keeganboshoff.mobileapplication.ui.screens.LoginScreen
 import com.keeganboshoff.mobileapplication.ui.screens.RegisterScreen
 import com.keeganboshoff.mobileapplication.ui.screens.RegistrationSuccessScreen
+import com.keeganboshoff.mobileapplication.ui.screens.StartSessionScreen
 
 @Composable
 fun NavGraph(
@@ -60,7 +61,24 @@ fun NavGraph(
 
         // Home
         composable("home") {
-            HomeScreen()
+            HomeScreen(
+                onNavigateToStartSession = {
+                    navController.navigate("start_session") {
+                        popUpTo("home") { inclusive = true }
+                    }
+                }
+            )
+        } // End Home
+
+        // Start Session
+        composable("start_session") {
+            StartSessionScreen(
+                onStartSessionSuccess = {
+                    navController.navigate("home") {
+                        popUpTo("start_session") { inclusive = true }
+                    }
+                }
+            )
         }
     }
 }

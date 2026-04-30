@@ -1,6 +1,7 @@
 package com.keeganboshoff.mobileapplication.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,13 +36,29 @@ import com.keeganboshoff.mobileapplication.ui.theme.TextSecondary
 import com.keeganboshoff.mobileapplication.ui.viewmodel.HomeViewModel
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
+fun HomeScreen(
+    onNavigateToStartSession: () -> Unit,
+    viewModel: HomeViewModel = viewModel()
+) {
     val uiState = viewModel.uiState
     val totalProfit = uiState.sessions.sumOf { it.profit }
+    val focusManager = LocalFocusManager.current
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Brush.verticalGradient(listOf(DeepVioletGlow, MidnightBlack))),
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(DeepVioletGlow, MidnightBlack)
+                )
+            )
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = {
+                        focusManager.clearFocus()
+                    }
+                )
+            }
     ) {
         Column(
             modifier = Modifier
@@ -111,7 +130,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                 Spacer(modifier = Modifier.height(24.dp))
 
                 VarsityButton(text = "START NEW SESSION") {
-                    TODO("Implement start session button navigation")
+                    onNavigateToStartSession()
                 }
             }
         }
