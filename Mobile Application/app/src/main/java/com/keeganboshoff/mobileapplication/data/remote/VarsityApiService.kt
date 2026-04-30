@@ -1,6 +1,6 @@
 package com.keeganboshoff.mobileapplication.data.remote
 
-import com.keeganboshoff.mobileapplication.data.models.UserDto
+import com.keeganboshoff.mobileapplication.data.models.UserProfileResponse
 import com.keeganboshoff.mobileapplication.data.models.UserSyncRequest
 import retrofit2.Response
 import retrofit2.http.Body
@@ -16,5 +16,5 @@ interface VarsityApiService {
     ): Response<Unit>
 
     @GET("api/users/profile")
-    suspend fun getUserProfile(@Header("Authorization") token: String): Response<UserDto>
+    suspend fun getUserProfile(@Header("Authorization") token: String): Response<UserProfileResponse>
 }
