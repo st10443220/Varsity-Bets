@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.keeganboshoff.mobileapplication.data.models.BetSessionResponse
 import com.keeganboshoff.mobileapplication.data.remote.RetrofitClient
 import com.keeganboshoff.mobileapplication.ui.state.HomeUiState
 import kotlinx.coroutines.launch
@@ -33,11 +34,13 @@ class HomeViewModel : ViewModel() {
 
                     if (response.isSuccessful) {
                         val userProfile = response.body()
+                        val sessionsList = userProfile?.sessions ?: emptyList()
 
                         uiState = uiState.copy(
                             fullName = userProfile?.fullName ?: "User",
                             username = userProfile?.username ?: "default user",
-                            sessionsCount = userProfile?.sessions?.size ?: 0,
+                            streak = calculateWinStreak(sessionsList),
+                            sessions = userProfile?.sessions ?: emptyList(),
                             isLoading = false
                         )
                     } else {
@@ -54,5 +57,23 @@ class HomeViewModel : ViewModel() {
                 }
             }
         }
+    }
+
+    private fun calculateWinStreak(sessions: List<BetSessionResponse>): Int {
+        if (sessions.isEmpty()) return 0
+
+        val sorted = sessions.sortedByDescending { it.startTime }
+
+        var streak = 0
+
+        for (session in sorted) {
+            if (session.profit > 0) {
+                streak++
+            } else {
+                break
+            }
+        }
+
+        return streak
     }
 }

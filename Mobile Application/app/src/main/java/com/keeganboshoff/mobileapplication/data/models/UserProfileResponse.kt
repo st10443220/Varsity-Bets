@@ -5,5 +5,5 @@ data class UserProfileResponse(
     val fullName: String,
     val username: String,
     val createdAt: String,
-    val sessions: List<Any>
+    val sessions: List<BetSessionResponse>
 )
