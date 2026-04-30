@@ -1,4 +1,5 @@
-﻿using Api.Models;
+﻿using Api.DTOs;
+using Api.Models;
 using Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,6 +34,16 @@ public class UsersController : ControllerBase
 
         var userProfile = await _userService.GetUserProfileAsync(firebaseUid);
 
-        return Ok(userProfile);
+        if (userProfile == null)
+            return NotFound();
+
+        return Ok(
+            new UserDto
+            {
+                FirebaseUid = userProfile.FirebaseUid,
+                FullName = userProfile.FullName,
+                Username = userProfile.Username,
+            }
+        );
     }
 }

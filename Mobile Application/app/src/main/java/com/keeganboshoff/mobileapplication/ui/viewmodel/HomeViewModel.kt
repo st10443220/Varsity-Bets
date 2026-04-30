@@ -16,10 +16,10 @@ class HomeViewModel : ViewModel() {
         private set
 
     init {
-        fetchUserProfile()
+        fetchDashboardData()
     }
 
-    private fun fetchUserProfile() {
+    private fun fetchDashboardData() {
         val user = FirebaseAuth.getInstance().currentUser
         uiState = uiState.copy(isLoading = true)
 
@@ -28,25 +28,31 @@ class HomeViewModel : ViewModel() {
 
             viewModelScope.launch {
                 try {
-                    val response = RetrofitClient.apiService.getUserProfile(
+
+                    val userResponse = RetrofitClient.apiService.getUserProfile(
                         token = token
                     )
 
-                    if (response.isSuccessful) {
-                        val userProfile = response.body()
-                        val sessionsList = userProfile?.sessions ?: emptyList()
+                    val sessionsResponse = RetrofitClient.apiService.getUserHistory(
+                        token = token,
+                        uid = user.uid
+                    )
+
+                    if (userResponse.isSuccessful && sessionsResponse.isSuccessful) {
+                        val userProfile = userResponse.body()
+                        val sessionsList = sessionsResponse.body() ?: emptyList()
 
                         uiState = uiState.copy(
                             fullName = userProfile?.fullName ?: "User",
-                            username = userProfile?.username ?: "default user",
+                            username = userProfile?.username ?: "",
                             streak = calculateWinStreak(sessionsList),
-                            sessions = userProfile?.sessions ?: emptyList(),
+                            sessions = sessionsList,
                             isLoading = false
                         )
                     } else {
                         uiState = uiState.copy(
                             isLoading = false,
-                            errorMessage = "Error: ${response.code()}"
+                            errorMessage = "Error: ${userResponse.code()}"
                         )
                     }
                 } catch (e: Exception) {
@@ -62,7 +68,7 @@ class HomeViewModel : ViewModel() {
     private fun calculateWinStreak(sessions: List<BetSessionResponse>): Int {
         if (sessions.isEmpty()) return 0
 
-        val sorted = sessions.sortedByDescending { it.startTime }
+        val sorted = sessions.sortedByDescending { it.date }
 
         var streak = 0
 

@@ -15,6 +15,17 @@ namespace Api.Services
 
         public async Task<BetSession> StartSessionAsync(BetSession session)
         {
+            var hasActiveSession = await _context.BetSessions.AnyAsync(s =>
+                s.UserProfileFirebaseUid == session.UserProfileFirebaseUid && s.EndTime == null
+            );
+
+            if (hasActiveSession)
+            {
+                throw new InvalidOperationException(
+                    "You already have an active session running. Please end it before starting a new one."
+                );
+            }
+
             if (session.BuyInAmount <= 0)
             {
                 throw new ArgumentException("You need a positive buy-in to start a session.");

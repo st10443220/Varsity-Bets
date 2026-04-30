@@ -23,14 +23,22 @@ namespace Api.Controllers
         public async Task<ActionResult<SessionDto>> Start([FromBody] BetSession session)
         {
             var tokenUid = User.Claims.FirstOrDefault(c => c.Type == "user_id")?.Value;
+
             if (string.IsNullOrEmpty(tokenUid))
                 return Unauthorized();
 
             session.UserProfileFirebaseUid = tokenUid;
 
-            var result = await _sessionService.StartSessionAsync(session);
+            try
+            {
+                var result = await _sessionService.StartSessionAsync(session);
 
-            return CreatedAtAction(nameof(GetById), new { id = result.Id }, MapToDto(result));
+                return CreatedAtAction(nameof(GetById), new { id = result.Id }, MapToDto(result));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         // PATCH: api/sessions/{id}/end
@@ -69,6 +77,7 @@ namespace Api.Controllers
         public async Task<IActionResult> GetUserHistory(string uid)
         {
             var tokenUid = User.Claims.FirstOrDefault(c => c.Type == "user_id")?.Value;
+
             if (tokenUid != uid)
                 return Forbid("You can only view your own session history.");
 

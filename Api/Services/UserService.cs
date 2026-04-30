@@ -34,10 +34,9 @@ namespace Api.Services
 
         public async Task<UserProfile?> GetUserProfileAsync(string firebaseUid)
         {
-            // Switch from FindAsync to FirstOrDefaultAsync to use Include
-            return await _context
-                .UserProfiles.Include(u => u.Sessions) //
-                .FirstOrDefaultAsync(u => u.FirebaseUid == firebaseUid);
+            return await _context.UserProfiles.FirstOrDefaultAsync(u =>
+                u.FirebaseUid == firebaseUid
+            );
         }
     }
 }
