@@ -44,8 +44,8 @@ jobs:
       - name: Build and push API
         uses: docker/build-push-action@v6
         with:
-          context: ./MathAPI
-          file: ./MathAPI/Dockerfile
+          context: ./Api
+          file: ./Api/Dockerfile
           push: true
           tags: ghcr.io/${{ steps.vars.outputs.owner_lc }}/varsity-bets-api:latest
 
@@ -61,6 +61,7 @@ jobs:
       GITHUB_OWNER_LC: ${{ needs.publish.outputs.owner_lc }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
+      DB_USER: ${{ secrets.DB_USER }}
 
     steps:
       - name: Checkout
