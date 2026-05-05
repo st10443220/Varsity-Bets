@@ -6,7 +6,7 @@ services:
     environment:
       ACCEPT_EULA: "Y"
       MSSQL_SA_PASSWORD: "${DB_PASSWORD}"
-      MSSQl_SA_USER: "${DB_USER}"
+      MSSQL_SA_USER: "${DB_USER}"
     ports:
       - "1433:1433"
 

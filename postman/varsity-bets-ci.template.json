@@ -1,0 +1,29 @@
+{
+    "name": "Varsity Bets CI Environment",
+    "values": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:5000"
+        },
+        {
+            "key": "token",
+            "value": ""
+        },
+        {
+            "key": "uid",
+            "value": ""
+        },
+        {
+            "key": "userEmail",
+            "value": ""
+        },
+        {
+            "key": "userPassword",
+            "value": ""
+        },
+        {
+            "key": "firebaseApiKey",
+            "value": ""
+        }
+    ]
+}

@@ -1,0 +1,12 @@
+{
+    "name": "varsity-bets-tests",
+    "version": "1.0.0",
+    "scripts": {
+        "test:api": "cross-var newman run postman/varsity-bets-api.postman_collection.json -e postman/varsity-bets-ci.template.json --env-var baseUrl=$BASE_URL --env-var firebaseApiKey=$FIREBASE_API_KEY --env-var userEmail=$USER_EMAIL --env-var userPassword=$USER_PASSWORD"
+    },
+    "devDependencies": {
+        "cross-var": "^1.1.0",
+        "dotenv": "^17.4.2",
+        "newman": "^6.2.1"
+    }
+}

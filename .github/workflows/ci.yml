@@ -120,6 +120,26 @@ jobs:
           echo "===== API LOGS ====="
           docker logs varsity-bets-api || true
 
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run API Tests
+        run: npm run test:api
+        env:
+          BASE_URL: http://localhost:5000
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          USER_EMAIL: ${{ secrets.USER_EMAIL }}
+          USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
+
       - name: Stop stack
         if: always()
         run: docker compose -f compose.ci.yml down -v
+
+      - name: Run API Tests
+        run: |
+          newman run postman/varsity-bets-api.postman_collection.json \
+          -e postman/varsity-bets-ci.template.json \
+          --env-var "baseUrl=http://localhost:5000" \
+          --env-var "firebaseApiKey=${{ secrets.FIREBASE_API_KEY }}" \
+          --env-var "userEmail=${{ secrets.USER_EMAIL }}" \
+          --env-var "userPassword=${{ secrets.USER_PASSWORD }}"
