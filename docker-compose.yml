@@ -1,5 +1,4 @@
 name: ${COMPOSE_PROJECT_NAME}
-
 services:
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -52,10 +51,10 @@ services:
     depends_on:
       db-init:
         condition: service_completed_successfully
-    environment:
-      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - ASPNETCORE_URLS=http://0.0.0.0:8080
-      - ConnectionStrings__DefaultConnection=Server=db;Database=${DB_NAME};User=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=True;
+    environment: ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      ASPNETCORE_URLS=http://0.0.0.0:8080
+      FIREBASE_
+      ConnectionStrings__DefaultConnection=Server=db;Database=${DB_NAME};User=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=True;
 
 volumes:
   sql-data:

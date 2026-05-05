@@ -66,11 +66,11 @@ namespace Api
             {
                 app.MapOpenApi();
             }
+            else
+            {
+                app.UseHttpsRedirection();
 
-            //if (!app.Environment.IsDevelopment())
-            //{
-            //    app.UseHttpsRedirection();
-            //}
+            }
 
             app.UseAuthentication();
             app.UseAuthorization();
