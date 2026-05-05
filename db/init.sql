@@ -48,3 +48,17 @@ BEGIN
     );
 END
 GO
+
+IF NOT EXISTS (SELECT 1 FROM BetCategories WHERE Id = 1)
+BEGIN
+    SET IDENTITY_INSERT BetCategories ON;
+
+    INSERT INTO BetCategories (Id, Name, Description, HexColor, IconName)
+    VALUES 
+    (1, 'Roulette', 'Track your spins', '#E74C3C', 'casino'),
+    (2, 'Blackjack', 'Hit or Stand', '#2C3E50', 'style'),
+    (3, 'Slots', 'Spin to win', '#F1C40F', 'seven_poker');
+
+    SET IDENTITY_INSERT BetCategories OFF;
+END
+GO
