@@ -8,7 +8,8 @@
         public decimal BuyIn { get; set; }
         public decimal CashOut { get; set; }
         public decimal Profit { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
         public bool IsActive { get; set; }
     }
 }

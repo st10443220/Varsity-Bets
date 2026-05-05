@@ -90,17 +90,18 @@ namespace Api.Controllers
             return Ok(sessions.Select(MapToDto));
         }
 
-        private static SessionDto MapToDto(BetSession s) =>
+        private static SessionDto MapToDto(BetSession session) =>
             new SessionDto
             {
-                Id = s.Id,
-                CategoryName = s.Category?.Name ?? "Unknown",
-                CategoryIcon = s.Category?.IconName ?? "help",
-                BuyIn = s.BuyInAmount,
-                CashOut = s.CashOutAmount,
-                Profit = s.Profit,
-                Date = s.StartTime,
-                IsActive = s.IsActive,
+                Id = session.Id,
+                CategoryName = session.Category?.Name ?? "Unknown",
+                CategoryIcon = session.Category?.IconName ?? "help",
+                BuyIn = session.BuyInAmount,
+                CashOut = session.CashOutAmount,
+                Profit = session.Profit,
+                StartTime = session.StartTime,
+                EndTime = session.EndTime,
+                IsActive = session.IsActive,
             };
     }
 }

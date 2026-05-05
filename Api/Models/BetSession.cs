@@ -5,6 +5,7 @@ namespace Api.Models
 {
     public class BetSession
     {
+        [Key]
         public int Id { get; set; }
 
         [ForeignKey("User")]

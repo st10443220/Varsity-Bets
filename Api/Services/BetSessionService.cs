@@ -34,6 +34,7 @@ namespace Api.Services
             var categoryExists = await _context.BetCategories.AnyAsync(c =>
                 c.Id == session.BetCategoryId
             );
+
             if (!categoryExists)
             {
                 throw new KeyNotFoundException("The selected betting category does not exist.");
@@ -51,7 +52,9 @@ namespace Api.Services
 
         public async Task<BetSession?> EndSessionAsync(int sessionId, decimal finalCashOut)
         {
-            var session = await _context.BetSessions.FindAsync(sessionId);
+            var session = await _context
+                .BetSessions.Include(s => s.Category)
+                .FirstOrDefaultAsync(s => s.Id == sessionId);
 
             if (session == null)
                 return null;
@@ -78,7 +81,8 @@ namespace Api.Services
         public async Task<IEnumerable<BetSession>> GetUserHistoryAsync(string firebaseUid)
         {
             return await _context
-                .BetSessions.Where(s => s.UserProfileFirebaseUid == firebaseUid)
+                .BetSessions.Include(s => s.Category)
+                .Where(s => s.UserProfileFirebaseUid == firebaseUid)
                 .OrderByDescending(s => s.StartTime)
                 .ToListAsync();
         }

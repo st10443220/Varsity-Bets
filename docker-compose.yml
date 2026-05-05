@@ -1,5 +1,4 @@
 name: ${COMPOSE_PROJECT_NAME}
-version: '3.4'
 
 services:
   db:
@@ -12,18 +11,47 @@ services:
       - "1433:1433"
     volumes:
       - sql-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/1433'"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+
+  db-init:
+    image: mcr.microsoft.com/mssql-tools
+    container_name: db-init
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./db/init.sql:/init.sql
+    entrypoint: >
+      /bin/bash -c "
+      /opt/mssql-tools/bin/sqlcmd -S db -U ${DB_USER} -P ${DB_PASSWORD} -Q 'SELECT 1' ;
+      until [ $$? -eq 0 ]; do
+        echo 'Waiting for SQL Server...';
+        sleep 2;
+        /opt/mssql-tools/bin/sqlcmd -S db -U ${DB_USER} -P ${DB_PASSWORD} -Q 'SELECT 1' ;
+      done;
+      echo 'Running init.sql...';
+      /opt/mssql-tools/bin/sqlcmd -S db -U ${DB_USER} -P ${DB_PASSWORD} -i /init.sql;
+      echo 'Database initialized';
+      "
+    restart: "no"
 
   api:
     image: ${DOCKER_REGISTRY-}api
     container_name: varsity-bets-api
     build:
-      context: .
-      dockerfile: Api/Dockerfile
+      context: ./Api
+      dockerfile: Dockerfile
     ports:
       - "5000:8080"
       - "5001:8081"
     depends_on:
-      - db
+      db-init:
+        condition: service_completed_successfully
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ASPNETCORE_URLS=http://0.0.0.0:8080
