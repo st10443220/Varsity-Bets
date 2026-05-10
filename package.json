@@ -2,7 +2,8 @@
     "name": "varsity-bets-tests",
     "version": "1.0.0",
     "scripts": {
-        "test:api": "cross-var newman run postman/varsity-bets-api.postman_collection.json -e postman/varsity-bets-ci.template.json --env-var baseUrl=$BASE_URL --env-var firebaseApiKey=$FIREBASE_API_KEY --env-var userEmail=$USER_EMAIL --env-var userPassword=$USER_PASSWORD"
+        "test:api": "cross-var newman run postman/varsity-bets-api.postman_collection.json -e postman/varsity-bets-ci.template.json --env-var baseUrl=$BASE_URL --env-var firebaseApiKey=$FIREBASE_API_KEY --env-var userEmail=$USER_EMAIL --env-var userPassword=$USER_PASSWORD",
+        "test:local": "npx dotenv-cli -- npm run test:api"
     },
     "devDependencies": {
         "cross-var": "^1.1.0",
